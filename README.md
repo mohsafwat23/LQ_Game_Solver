@@ -4,7 +4,7 @@ This repo is inspired by [ilqgames](https://arxiv.org/abs/1909.04694), efficient
 
 It is still a work in progress. An example of a two 2D point-mass agents navigating at an intersection can be shown in the following GIF. 
 
-![Alt Text](two_agent.gif)
+![Alt Text](assets/two_agent.gif)
 
 ### Todo list:
 
