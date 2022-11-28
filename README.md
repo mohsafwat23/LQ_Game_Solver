@@ -10,6 +10,8 @@ It is still a work in progress. An example of a two 2D point-mass agents navigat
 
 - Add documentation, remove old code, and write report
 
+- Put code in jl file instead of ipynb 
+
 - Integrate the linear approximation of the nonlinear dynamics for multiple agents (linearize and discretize)
     - Check that the point mass works using both dynamics
 
