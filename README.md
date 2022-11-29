@@ -10,7 +10,9 @@ It is still a work in progress. An example of a two 2D point-mass agents navigat
 
 - Add documentation, remove old code, and write report
 
-- Put code in jl file instead of ipynb 
+- Receding horizon
+
+- Put code in .jl file instead of .ipynb 
 
 - Integrate the linear approximation of the nonlinear dynamics for multiple agents (linearize and discretize)
     - Check that the point mass works using both dynamics
@@ -21,3 +23,5 @@ It is still a work in progress. An example of a two 2D point-mass agents navigat
     - Add TurtleBot to MeshCat to visualize results
 
 - Check augmented lagrangian dynamic programming for equality and inequality constraints
+
+- Monte Carlo simulations to observe Nash Equilibria solutions
