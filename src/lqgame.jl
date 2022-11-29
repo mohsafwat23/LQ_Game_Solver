@@ -81,17 +81,15 @@ function lqGame!(Aₜ, B1ₜ, B2ₜ, Q1ₜ, Q2ₜ, l1ₜ, l2ₜ, R11ₜ, R12ₜ,
 end
 
 
-function Rollout_RK4(fun, x₀, x̂, û, H, dt, P, α, α_scale)
+function Rollout_RK4(fun, x₀, x̂, û, umin, umax, H, dt, P, α, α_scale)
     """
     Rollout dynamics with initial state x₀ 
     and control law u = -Px - α
     P is an n x b gain matrix
     α is m x 1
     """
-    umax = [2.0,2.0]
-    umin = [-2.0,-2.0]
     
-    m = 2 #2 controls
+    m = size(û)[2] #2 controls
     k_steps = trunc(Int, H/dt) 
     xₜ = zeros(k_steps, length(x₀)) # 1500 x n
     uₜ = zeros(k_steps, m)
