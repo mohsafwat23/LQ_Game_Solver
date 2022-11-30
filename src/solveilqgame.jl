@@ -2,11 +2,10 @@ using LinearAlgebra
 
 function solveILQGame(dynamics, x₀, xgoal, Q1, Q2, Qn1, Qn2, R11, R12, R21, R22, umin, umax, dmax, ρ, dt, H)
 
-    n1 = 4
-    n2 = 4
-    n = n1 + n2
-    m1 = 2
-    m2 = 2
+    n = length(x₀)
+    #println(x₀)
+    m1 = size(R11)[1]
+    m2 = size(R22)[1]
     k_steps = trunc(Int, H/dt) 
 
     x̂ = zeros(k_steps, n) # 1500 x need
@@ -45,15 +44,17 @@ function solveILQGame(dynamics, x₀, xgoal, Q1, Q2, Qn1, Qn2, R11, R12, R21, R2
     ugoal = cat(u1goal, u2goal, dims=1)
     βreg = 1.0
     while !converged
-        converged = isConverged(xₜ, x̂, tol = 1e-6)
+        converged = isConverged(xₜ, x̂, tol = 1e-2)
         total_cost1 = 0
         total_cost2 = 0
         u1ₜ = uₜ[:, 1:m1]
         u2ₜ = uₜ[:, m1+1:m1+m2]
         for t = 1:(k_steps-1)
+            
             A, B = lin_dyn_discrete(dynamics, xₜ[t,:], uₜ[t,:], dt)
-            Aₜ[:,:,t] = A
+            #A, B = lin_dyn_discrete(dynamics, xₜ[t,:] - x̂[t,:], uₜ[t,:] - û[t,:], dt)
 
+            Aₜ[:,:,t] = A
             #B1Shape = size(B1)
             #B2Shape = size(B2)
             B1ₜ[:,:,t] = B[:, 1:m1]

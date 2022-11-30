@@ -1,6 +1,12 @@
 using LinearAlgebra
 using ForwardDiff
 
+function lin_dyn(dynamics, x, u)
+    A = ForwardDiff.jacobian(dx -> dynamics(dx, u), x)
+    B = ForwardDiff.jacobian(du -> dynamics(x, du), u)
+    return A, B
+end
+
 function lin_dyn_discrete(dynamics, x, u, dt)
     A = ForwardDiff.jacobian(dx -> dynamics(dx, u), x)
     B = ForwardDiff.jacobian(du -> dynamics(x, du), u)
