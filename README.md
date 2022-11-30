@@ -8,19 +8,22 @@ It is still a work in progress. An example of a two 2D point-mass agents navigat
 
 ### Todo list:
 
-- Add documentation, remove old code, and write report
+- Add documentation and write report
 
-- Receding horizon
+- Receding horizon for online trajectory optimization
 
-- Put code in .jl file instead of .ipynb 
+- Make a better GUI for the results
+  - Graphical represenation of the robots pose and shape in plots
+  - Add TurtleBot to MeshCat or on ROS to visualize results
 
-- Integrate the linear approximation of the nonlinear dynamics for multiple agents (linearize and discretize)
-    - Check that the point mass works using both dynamics
+-  ~~Put code in .jl file instead of .ipynb~~
+
+- ~~Integrate the linear approximation of the nonlinear dynamics for multiple agents (linearize and discretize)~~
+    - ~~Check that the point mass works using both dynamics~~
 
 - Add state constraints
 
-- Use differential drive kinematics to use on TurtleBots
-    - Add TurtleBot to MeshCat to visualize results
+- ~~Use differential drive kinematics to use on TurtleBots~~
 
 - Check augmented lagrangian dynamic programming for equality and inequality constraints
 
