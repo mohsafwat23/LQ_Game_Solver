@@ -1,7 +1,7 @@
 using LinearAlgebra
 using ForwardDiff
 
-function cost(Qi, Rii, Rij, Qni, x, ui, uj, xgoal, uigoal, ujgoal, dmax, ρ, B)
+function costPointMass(Qi, Rii, Rij, Qni, x, ui, uj, xgoal, uigoal, ujgoal, dmax, ρ, B)
 
     goal = x - xgoal
     rel_dist = (x[1:2] - x[5:6])'*I*(x[1:2] - x[5:6])
@@ -42,4 +42,18 @@ function quadratic_cost(cost_fun, Qi, Rii, Rij, Qni, x, ui, uj, xgoal, uigoal, u
 end
 
 
+### Quad Stuff
+function costQuadcopter(Qi, Rii, Rij, Qni, x, ui, uj, xgoal, uigoal, ujgoal, dmax, ρ, B)
 
+    goal = x - xgoal
+    rel_dist = (x[1:3] - x[10:12])'*I*(x[1:3] - x[10:12])
+    if B 
+        return 0.5*goal'*Qni*goal
+    else            
+        dx = x - xgoal
+        dui = ui - uigoal
+        duj = uj - ujgoal
+        return 0.5*(dx'*Qi*dx + dui'*Rii*dui + duj'*Rij*duj) + ρ*(min(sqrt(rel_dist) - dmax, 0))^2 
+        
+    end
+end

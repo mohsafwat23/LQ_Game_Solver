@@ -3,6 +3,8 @@ using LinearAlgebra
 
 function lqGame!(Aₜ, B1ₜ, B2ₜ, Q1ₜ, Q2ₜ, l1ₜ, l2ₜ, R11ₜ, R12ₜ, R21ₜ, R22ₜ, r11ₜ, r22ₜ, r12ₜ, r21ₜ)
     """
+    n = total number of states for both players
+    m = number of inputs for each player
     Input
     Ad is an nxn matrix (8x8)
     B1d is an nxm matrix (8x2)
@@ -21,16 +23,13 @@ function lqGame!(Aₜ, B1ₜ, B2ₜ, Q1ₜ, Q2ₜ, l1ₜ, l2ₜ, R11ₜ, R12ₜ,
     α₁ (1x2)
     ζ₁ is an nx1 matrix (8x1)
     """
-    n = 8
-    m = 2
+    n, m = size(B1ₜ)
 
+    V₁ = copy(Q1ₜ[:,:,end]) # At last time step
+    V₂ = copy(Q2ₜ[:,:,end]) # At last time step
 
-
-    V₁ = copy(Q1ₜ[:,:,end]) #at last time step
-    V₂ = copy(Q2ₜ[:,:,end]) #at last time step
-
-    ζ₁ = copy(l1ₜ[:,end]) #at last time step
-    ζ₂ = copy(l2ₜ[:,end]) #at last time step
+    ζ₁ = copy(l1ₜ[:,end]) # At last time step
+    ζ₂ = copy(l2ₜ[:,end]) # At last time step
 
     P₁ = zeros(Float32, (m, n, k_steps))
     P₂ = zeros(Float32, (m, n, k_steps))
@@ -49,16 +48,16 @@ function lqGame!(Aₜ, B1ₜ, B2ₜ, Q1ₜ, Q2ₜ, l1ₜ, l2ₜ, R11ₜ, R12ₜ,
         Y2 = B2ₜ[:,:,t]' * V₂ * Aₜ[:,:,t] 
         Y = [Y1; Y2] # 4 x 8
         P = S\Y # 4x8
-        P₁[:,:,t] = P[1:2, :]
-        P₂[:,:,t] = P[3:4, :]
+        P₁[:,:,t] = P[1:m, :]
+        P₂[:,:,t] = P[m+1:2*m, :]
         
         # solve for αs (right hand side of the eqn)
         Yα1 = (B1ₜ[:,:,t]' * ζ₁) + r11ₜ[:,t] # 2x2
         Yα2 = (B2ₜ[:,:,t]' * ζ₂) + r22ₜ[:,t] # 2x2
         Yα = [Yα1; Yα2]  # 4x2
         α = S\Yα # 4x2
-        α₁[:,t] = α[1:2, :]
-        α₂[:,t] = α[3:4, :]
+        α₁[:,t] = α[1:m, :]
+        α₂[:,t] = α[m+1:2*m, :]
         
         #Update value function(s)
         Fₜ = Aₜ[:,:,t] - (B1ₜ[:,:,t]*P₁[:,:,t] + B2ₜ[:,:,t]*P₂[:,:,t])

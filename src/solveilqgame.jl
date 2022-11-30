@@ -1,9 +1,8 @@
 using LinearAlgebra
 
-function solveILQGame(dynamics, x₀, xgoal, Q1, Q2, Qn1, Qn2, R11, R12, R21, R22, umin, umax, dmax, ρ, dt, H)
+function solveILQGame(dynamics, costf, x₀, xgoal, u1goal, u2goal, Q1, Q2, Qn1, Qn2, R11, R12, R21, R22, umin, umax, dmax, ρ, dt, H)
 
     n = length(x₀)
-    #println(x₀)
     m1 = size(R11)[1]
     m2 = size(R22)[1]
     k_steps = trunc(Int, H/dt) 
@@ -40,8 +39,8 @@ function solveILQGame(dynamics, x₀, xgoal, Q1, Q2, Qn1, Qn2, R11, R12, R21, R2
     r21ₜ = zeros(Float32, (m2, k_steps))
 
     converged = false
-    u1goal = [0; 0]; u2goal = [0; 0]; 
-    ugoal = cat(u1goal, u2goal, dims=1)
+    # u1goal = [0; 0]; u2goal = [0; 0]; 
+    # ugoal = cat(u1goal, u2goal, dims=1)
     βreg = 1.0
     while !converged
         converged = isConverged(xₜ, x̂, tol = 1e-2)
@@ -63,11 +62,11 @@ function solveILQGame(dynamics, x₀, xgoal, Q1, Q2, Qn1, Qn2, R11, R12, R21, R2
 
             #Player 1 cost
             costval1, Q1ₜ[:,:,t], l1ₜ[:,t], R11ₜ[:,:,t], r11ₜ[:,t], R12ₜ[:,:,t], r12ₜ[:,t] = 
-            quadratic_cost(cost, Q1, R11, R12, Qn1, xₜ[t,:], u1ₜ[t,:], u2ₜ[t,:], xgoal, u1goal, u2goal, dmax, ρ, false)
+            quadratic_cost(costf, Q1, R11, R12, Qn1, xₜ[t,:], u1ₜ[t,:], u2ₜ[t,:], xgoal, u1goal, u2goal, dmax, ρ, false)
             
             #Player 2 cost
             costval2, Q2ₜ[:,:,t], l2ₜ[:,t], R22ₜ[:,:,t], r22ₜ[:,t], R21ₜ[:,:,t], r21ₜ[:,t] = 
-            quadratic_cost(cost, Q2, R22, R21, Qn2, xₜ[t,:], u2ₜ[t,:], u1ₜ[t,:], xgoal, u2goal, u1goal, dmax, ρ, false)
+            quadratic_cost(costf, Q2, R22, R21, Qn2, xₜ[t,:], u2ₜ[t,:], u1ₜ[t,:], xgoal, u2goal, u1goal, dmax, ρ, false)
             
             # Regularization
             while !isposdef(Q1ₜ[:,:,t])
@@ -82,11 +81,11 @@ function solveILQGame(dynamics, x₀, xgoal, Q1, Q2, Qn1, Qn2, R11, R12, R21, R2
         end
         #Player 1 Terminal cost
         costval1, Q1ₜ[:,:,end], l1ₜ[:,end], R11ₜ[:,:,end], r11ₜ[:,end], R12ₜ[:,:,end], r12ₜ[:,end] = 
-        quadratic_cost(cost, Q1, R11, R12, Qn1, xₜ[end,:], u1ₜ[end,:], u2ₜ[end,:], xgoal, u1goal, u2goal, dmax, ρ, true)
+        quadratic_cost(costf, Q1, R11, R12, Qn1, xₜ[end,:], u1ₜ[end,:], u2ₜ[end,:], xgoal, u1goal, u2goal, dmax, ρ, true)
         
         #Player 2 Terminal cost
         costval2, Q2ₜ[:,:,end], l2ₜ[:,end], R22ₜ[:,:,end], r22ₜ[:,end], R21ₜ[:,:,end], r21ₜ[:,end] = 
-        quadratic_cost(cost, Q2, R22, R21, Qn2, xₜ[end,:], u2ₜ[end,:], u2ₜ[end,:], xgoal, u2goal, u1goal, dmax, ρ, true)
+        quadratic_cost(costf, Q2, R22, R21, Qn2, xₜ[end,:], u2ₜ[end,:], u2ₜ[end,:], xgoal, u2goal, u1goal, dmax, ρ, true)
 
         total_cost1 += costval1
         total_cost2 += costval2
